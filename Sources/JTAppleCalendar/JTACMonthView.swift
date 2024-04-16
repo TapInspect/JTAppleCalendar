@@ -110,7 +110,7 @@ open class JTACMonthView: UICollectionView {
     }
     
     // Configuration parameters from the dataSource
-    var _cachedConfiguration: ConfigurationParameters!
+    var _cachedConfiguration: ConfigurationParameters?
     // Set the start of the month
     var startOfMonthCache: Date!
     // Set the end of month
@@ -130,8 +130,13 @@ open class JTACMonthView: UICollectionView {
         // Ensure date is within valid boundary
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         let firstDayOfDate = calendar.date(from: components)!
-        if !((firstDayOfDate >= startOfMonthCache!) && (firstDayOfDate <= endOfMonthCache!)) { return retval }
-        
+
+        guard let startOfMonthCache,
+              let endOfMonthCache,
+              firstDayOfDate >= startOfMonthCache && firstDayOfDate <= endOfMonthCache else {
+            return retval
+        }
+
         // Get valid indexPath of date to scroll to
         let retrievedPathsFromDates = pathsFromDates([date])
         if retrievedPathsFromDates.isEmpty { return retval }
